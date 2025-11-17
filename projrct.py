@@ -1,6 +1,8 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+import streamlit as st
+import plotly.graph_objects as go 
 
 df=pd.read_csv("DATA.csv")
 print(df.head(5))
@@ -58,16 +60,25 @@ category=["property_type","neighborhood_types","garage_spaces","views_types","he
 
 values=[property_type,neighborhood_types,garage_spaces,views_types,heating_type,cooling_type,foundation_type,roof_material]
 
-plt.figure(figsize=(10,6))
-plt.bar(category,values,color="skyblue",edgecolor="black")
-plt.title("Number of Unique Categories in Property Dataset", fontsize=14)
-plt.xlabel("Category", fontsize=12)
-plt.ylabel("Unique Values Count", fontsize=12)
-plt.xticks(rotation=45)
-plt.tight_layout()
-plt.grid(True,linestyle="--",alpha=0.5)
-# plt.show()
-print("\n")
+fig1=go.Figure()
+fig1.add_trace(go.Bar(x=category,y=values,marker_color="skyblue",name="Bar chart"
+))
+fig1.update_layout(title="Number of Unique Categories in Property Dataset",
+    xaxis_title="Category",yaxis_title="Unique Values Count",
+    template="plotly_white"
+)
+st.plotly_chart(fig1,use_container_width=True)
+
+# plt.figure(figsize=(10,6))
+# plt.bar(category,values,color="skyblue",edgecolor="black")
+# plt.title("Number of Unique Categories in Property Dataset", fontsize=14)
+# plt.xlabel("Category", fontsize=12)
+# plt.ylabel("Unique Values Count", fontsize=12)
+# plt.xticks(rotation=45)
+# plt.tight_layout()
+# plt.grid(True,linestyle="--",alpha=0.5)
+# # plt.show()
+# print("\n")
 
 # total renovation_cost
 total_renovation_cost=df["renovation_cost"].sum(axis=0)
@@ -82,6 +93,12 @@ overall_profit=total_selling_price-total_renovation_cost
 print(f"The overall profit from all these properties we get is ::{overall_profit}")
 chart=["Total Renovation Cost","Total Selling Price","Overall Profit"]
 values=[total_renovation_cost,total_selling_price,overall_profit]
+
+fig2=go.Figure(go.Pie(labels=chart,values=values,textinfo="percent+label")
+)
+fig2.update_layout(title="COST")
+st.plotly_chart(fig2,use_container_width=True)
+
 # pie chart of price
 # plt.figure(figsize=(10,6))
 # plt.pie(values,labels=chart,autopct="%1.1f%%",startangle=90)
@@ -102,6 +119,12 @@ print(f"\nNumbers of properties renovate after 2000 ::{renovation_ye}")
 chart=["Renovation Before 2000","Renovation After 2000"]
 values=[renovation_y,renovation_ye]
 
+fig3=go.Figure(go.Pie(
+    values=values,labels=chart,textinfo="percent+label"
+))
+fig3.update_layout(title="CHART SHOWS RENOVATION YEARS")
+st.plotly_chart(fig3,use_container_width=True)
+
 # pie chart 
 # plt.pie(values,labels=chart,autopct="%1.1f%%",startangle=90)
 # plt.title("CHART SHOWS RENOVATION YEARS")
@@ -112,6 +135,16 @@ values=[renovation_y,renovation_ye]
 # Property Type vs Price
 property_type1=df.groupby("property_type")["selling_price"].sum()
 print("\n",property_type1)
+
+fig4=go.Figure()
+fig4.add_trace(go.Bar(
+    x=property_type1.index,y=property_type1.values,marker_color="red"
+))
+fig4.update_layout(
+    title="Chart show the each category total selling price ",xaxis_title="category",
+    yaxis_title="Price",template="plotly_white"
+)
+st.plotly_chart(fig4,use_container_width=True)
 
 # # bar chart show the each property type by the selling price 
 # plt.figure(figsize=(12,6))
@@ -129,17 +162,39 @@ bedrooms=df.groupby("bedrooms")["selling_price"].sum()
 print("\n",bedrooms)
 
 # # give the each graph different color 
+
+
+
 unique_bedroom=df["bedrooms"].unique()
-if len(unique_bedroom)<=10:
-    palette=sns.color_palette("tab10",len(unique_bedroom))
-elif len(unique_bedroom)<=20:
-    palette=sns.color_palette("tab20",len(unique_bedroom))
-else:
-    palette=sns.color_palette("husl",len(unique_bedroom))
-bedroom_color_map={bedrooms: palette[i % len(unique_bedroom)]for i,bedrooms  in enumerate(unique_bedroom)}
-colors=[bedroom_color_map[bedrooms] for bedrooms in df["bedrooms"]]
+palette=sns.color_palette("husl",len(unique_bedroom))
+palette_hex=["rgb({},{},{})".format(int(r*255),int(g*255),int(b*255))for r,g,b in palette]
+brand_color={brand: palette_hex[i %len(palette_hex)]for i,brand in enumerate(unique_bedroom)}
+
+# if len(unique_bedroom)<=10:
+#     palette=sns.color_palette("tab10",len(unique_bedroom))
+# elif len(unique_bedroom)<=20:
+#     palette=sns.color_palette("tab20",len(unique_bedroom))
+# else:
+#     palette=sns.color_palette("husl",len(unique_bedroom))
+# bedroom_color_map={bedrooms: palette[i % len(unique_bedroom)]for i,bedrooms  in enumerate(unique_bedroom)}
+# colors=[bedroom_color_map[bedrooms] for bedrooms in df["bedrooms"]]
 
 # chart show the bedrooms per price 
+fig5=go.Figure()
+fig5.add_trace(go.Bar(x=bedrooms.index,y=bedrooms.values,
+                      marker_color=[brand_color[b]for b in bedrooms.index]
+))
+fig5.add_hline(
+    y=bedrooms.mean(),line_dash="dash",line_color="Black",
+    annotation_text="Average",annotation_position="top left"
+)
+fig5.update_layout(
+    title="PER BEDROOM TOTAL PRICE",xaxis_title="BEDROOM",
+    yaxis_title="PRICE",template="plotly_white"
+)
+st.plotly_chart(fig5,use_container_width=True)
+
+
 # plt.figure(figsize=(12,6))
 # plt.bar(bedrooms.index,bedrooms.values,color=colors,edgecolor="black")
 # plt.axhline(df["bedrooms"].mean(),linestyle="--",linewidth=2,color="black",label="average")
@@ -154,8 +209,21 @@ colors=[bedroom_color_map[bedrooms] for bedrooms in df["bedrooms"]]
 
 # pool wise price
 pool=df.groupby("pool")["selling_price"].sum()
+# bar chart show the pool wise price 
 
-# # bar chart show the pool wise price 
+fig6=go.Figure()
+
+fig6.add_trace(go.Bar(
+    x=pool.index,
+    y=pool.values,
+    marker_color=[brand_color.get(b, "gray") for b in pool.index]
+))
+fig6.update_layout(
+    title="CHART SHOW THE PRICE OF POOL WITH OR WITHOUT",
+    xaxis_title="POOL",yaxis_title="Price",template="plotly_white"
+)
+st.plotly_chart(fig6,use_container_width=True)
+
 # plt.bar(pool.index,pool.values,color=colors)
 # plt.title("CHART SHOW THE PRICE OF POOL WITH OR WITHOUT ")
 # plt.xlabel("POOL")
@@ -168,6 +236,16 @@ pool=df.groupby("pool")["selling_price"].sum()
 fireplace=df.groupby("fireplace")["selling_price"].sum()
 
 # chart show the price of fireplace with or without 
+fig7=go.Figure()
+fig7.add_trace(go.Bar(x=fireplace.index,y=fireplace.values,
+                      marker_color=[brand_color.get(b,"yellow")for b in fireplace.index]
+))
+fig7.update_layout(
+    title="CHART SHOW THE PRICE OF fireplace WITH OR WITHOUT ",
+    xaxis_title="Fireplace",yaxis_title="Price",template="plotly_white"
+)
+st.plotly_chart(fig7,use_container_width=True)
+
 # plt.figure(figsize=(12,6))
 # plt.bar(fireplace.index,fireplace.values,color=colors,edgecolor="black")
 # plt.title("CHART SHOW THE PRICE OF fireplace WITH OR WITHOUT ")
@@ -179,8 +257,17 @@ fireplace=df.groupby("fireplace")["selling_price"].sum()
 
 # # view wise price
 view=df.groupby("view")["selling_price"].sum()
+# chart show the view wise price 
+fig8=go.Figure()
+fig8.add_trace(go.Bar(
+    x=view.index,y=view.values,marker_color=[brand_color.get(b,"white")for b in view.index]
+))
+fig8.update_layout(
+    title="CHART SHOW THE PRICE OF view wise price",xaxis_title="view Type",yaxis_title="Price",template="plotly_white"
+)
+st.plotly_chart(fig8,use_container_width=True)
 
-# # chart show the view wise price 
+
 # plt.figure(figsize=(12,6))
 # plt.bar(view.index,view.values,color=colors,edgecolor="black")
 # plt.title("CHART SHOW THE PRICE OF view wise price")
@@ -205,8 +292,20 @@ heating_type=df.groupby("heating_type")["selling_price"].sum()
 
 # # cooling_type wise group 
 cooling_type=df.groupby("cooling_type")["selling_price"].sum()
+# cooling_type chart show the price 
+fig9=go.Figure()
+fig9.add_trace(go.Bar(
+    x=cooling_type.index,y=cooling_type.values,
+    marker_color=[brand_color.get(b,"green")for b in cooling_type.index]
+))
+fig9.update_layout(
+    title="CHART SHOW THE PRICE OF ON THE BASES cooling type",xaxis_title="COOLING TYPE",
+    yaxis_title="Price",template="plotly_white"
 
-# # cooling_type chart show the price 
+)
+st.plotly_chart(fig9,use_container_width=True)
+
+
 # plt.figure(figsize=(12,8))
 # plt.bar(cooling_type.index,cooling_type.values,color=colors,edgecolor="black")
 # plt.title("CHART SHOW THE PRICE OF ON THE BASES cooling type")
@@ -218,8 +317,18 @@ cooling_type=df.groupby("cooling_type")["selling_price"].sum()
 
 # # roof_material wise price 
 roof_material=df.groupby("roof_material")["selling_price"].sum()
-
 # roof_material wise chart show the price
+fig10=go.Figure()
+fig10.add_trace(go.Bar(
+    x=roof_material.index,y=roof_material.values,marker_color="red"
+))
+fig10.update_layout(
+    title="CHART SHOW THE PRICE OF ON THE BASES ROOF type",xaxis_title="ROOF TYPE",
+    yaxis_title="Price",
+    template="plotly_white"
+)
+st.plotly_chart(fig10,use_container_width=True)
+
 # plt.figure(figsize=(12,8))
 # plt.bar(roof_material.index,roof_material.values,color=colors,edgecolor="black")
 # plt.title("CHART SHOW THE PRICE OF ON THE BASES ROOF type")
@@ -231,8 +340,16 @@ roof_material=df.groupby("roof_material")["selling_price"].sum()
 
 # # garage_spaces wise price 
 garage_spaces1=df.groupby("garage_spaces")["selling_price"].sum()
+# bar chart show the garage_spaces
+fig11=go.Figure()
+fig11.add_trace(go.Bar(
+    x=garage_spaces1.index,y=garage_spaces1.values,marker_color="white"
+))
+fig11.update_layout(
+    title="group by chart show the garage_spaces",xaxis_title="Garage Spaces",yaxis_title="price",template="plotly_white"
+)
+st.plotly_chart(fig11,use_container_width=True)
 
-# # bar chart show the garage_spaces
 # plt.figure(figsize=(12,8))
 # plt.bar(garage_spaces1.index,garage_spaces1.values,color=colors,edgecolor="black")
 # plt.xlabel("Garage Spaces")
@@ -243,9 +360,18 @@ garage_spaces1=df.groupby("garage_spaces")["selling_price"].sum()
 # plt.xticks(rotation=45)
 # # plt.show()
 
-# # # sales trend over time 
-# df["selling_date"]=pd.to_datetime(df["selling_date"])
-# sales_trend=df.groupby("selling_date")["selling_price"].sum()
+# sales trend over time 
+df["selling_date"]=pd.to_datetime(df["selling_date"])
+sales_trend=df.groupby("selling_date")["selling_price"].sum()
+fig12=go.Figure()
+fig12.add_trace(go.Scatter(
+    x=sales_trend.index,y=sales_trend.values,mode="lines+markers",line=dict(color="red",width=2),marker=dict(size=8,color="red"),name="trand"
+))
+fig12.update_layout(
+    title="sale trend over time",xaxis_title="Date",yaxis_title="Price",template="plotly_white",hovermode="x unified",xaxis=dict(showgrid=True,gridwidth=1,gridcolor="lightGray"),yaxis=dict(showgrid=True,gridwidth=1,gridcolor="lightGray")
+)
+st.plotly_chart(fig12,use_container_width=True)
+
 # plt.figure(figsize=(14, 8))
 # plt.plot(sales_trend.index,sales_trend.values,color="blue",marker="o")
 # plt.grid(True,alpha=0.5,linestyle="--")
@@ -254,6 +380,14 @@ garage_spaces1=df.groupby("garage_spaces")["selling_price"].sum()
 # plt.ylabel("Price")
 # plt.tight_layout()
 # # plt.show()
+
+correlation = df.select_dtypes(include=['int64', 'float64']).corr()
+# heatmap
+fig13=go.Figure(data=go.Heatmap(
+    z=correlation.values,x=correlation.columns,y=correlation.index,colorscale="viridis",zmin=-1,zmax=1,colorbar=dict(title="correlation")
+))
+fig13.update_layout(title="correlation Heatmap",template="plotly_white")
+st.plotly_chart(fig13,use_container_width=True)
 
 # plt.figure(figsize=(16, 10))
 # sns.heatmap(

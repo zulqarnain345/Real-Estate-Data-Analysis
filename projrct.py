@@ -428,6 +428,15 @@ print(df[["year_built" , "year_built_category"]])
 avg_year=df.groupby("year_built_category")["selling_price"].mean().round(2)
 print(f"\nThe average price of the propert Before and After 2000 \n{avg_year}")
 
+fig14=go.Figure()
+fig14.add_trace(go.Bar(
+    x=avg_year.index,y=avg_year.values,marker_color=['#ff0000', '#00ff00'],marker_line_color="black",marker_line_width=1.5,text=avg_year.values,textposition="outside"
+))
+fig14.update_layout(
+    title="Average Selling Price: before vs after 2000",xaxis_title="Before After 2000 Category",yaxis_title="Average Selling Price",template="plotly_white"
+)
+st.plotly_chart(fig14,use_container_width=True)
+
 # bar chart
 # plt.bar(avg_year.index,avg_year.values,color=["red","green"],edgecolor="black")
 # for i,val in enumerate(avg_year.values):
@@ -444,6 +453,15 @@ print(df[["lot_size","lot_size_category"]])
 # average price for lot size
 avg_lot_size=df.groupby("lot_size_category")["selling_price"].mean().round(2)
 print(f"\nThe average price of the propert By the LOT size \n{avg_lot_size}")
+
+fig15=go.Figure()
+fig15.add_trace(go.Bar(
+    x=avg_lot_size.index,y=avg_lot_size.values,marker_color=['#ff0000', '#00ff00',"#00f7ff"],marker_line_color="black",marker_line_width=1.5,text=avg_lot_size.values,textposition="outside"
+))
+fig15.update_layout(
+    title="Average Selling Price: By lot size",xaxis_title="lot size Category",yaxis_title="Average Selling Pric",template="plotly_white"
+)
+st.plotly_chart(fig15,use_container_width=True)
 
 # bar chart 
 # plt.bar(avg_lot_size.index,avg_lot_size.values,color=["blue","skyblue","gray"],edgecolor="black")
@@ -479,6 +497,7 @@ big_diff = ((big_avg - small_avg) / small_avg) * 100
 print(f"Properties with Medium Garage are {medium_diff:.2f}% more expensive than Small Garage on average.")
 print(f"Properties with Big Garage are {big_diff:.2f}% more expensive than Small Garage on average.")
 
+
 # # # bar chart 
 # plt.bar(avg_garage_spaces.index,avg_garage_spaces.values,color=["blue","skyblue","gray"],edgecolor="black")
 # for i,val in enumerate(avg_garage_spaces.values):
@@ -501,18 +520,48 @@ no_pool_avg = df[df["pool"] == False]["selling_price"].mean()
 difference = ((pool_avg - no_pool_avg) / no_pool_avg) * 100
 print(f"Properties with a pool are {difference:.2f}% more expensive on average.")
 # bar chart 
-plt.bar(avg_pool.index,avg_pool.values,color=["blue","skyblue"],edgecolor="black")
-for i,val in enumerate(avg_pool.values):
-    plt.text(i,val,f"{val:.0f}",ha="center",va="bottom",fontsize=10)
-plt.title(f"Average Selling Price by Pool (Difference: {difference:.2f}%)")
-plt.xlabel("Pool Category")
-plt.ylabel("Average Selling Price")
-plt.show()
+fig17=go.Figure()
+fig17.add_trace(go.Bar(
+    x=avg_pool.index,y=avg_pool.values,marker_color=["#2cd4c6", "#0e37ed"],
+    marker_line_color="black",marker_line_width=1.5,
+    text=avg_pool.values,textposition="outside"
+))
+fig17.update_layout(
+    title="Average Selling Price by Pool",
+    xaxis_title="Pool Category",yaxis_title="Average Selling Pric",
+    template="plotly_white"
+)
+st.plotly_chart(fig17,use_container_width=True)
 
-# # fireplace 
-# df["fireplace_category"]=df["fireplace"].apply(lambda x:"Has fireplace"if x else "No fireplace")
-# avg_fireplace=df.groupby("fireplace_category")["selling_price"].mean().round(2)
-# print(f"\nThe average price of the propert with Fireplace and withour Fireplace \n{avg_fireplace}")
+
+
+# plt.bar(avg_pool.index,avg_pool.values,color=["blue","skyblue"],edgecolor="black")
+# for i,val in enumerate(avg_pool.values):
+#     plt.text(i,val,f"{val:.0f}",ha="center",va="bottom",fontsize=10)
+# plt.title(f"Average Selling Price by Pool (Difference: {difference:.2f}%)")
+# plt.xlabel("Pool Category")
+# plt.ylabel("Average Selling Price")
+# plt.show()
+
+# fireplace 
+df["fireplace_category"]=df["fireplace"].apply(lambda x:"Has fireplace"if x else "No fireplace")
+avg_fireplace=df.groupby("fireplace_category")["selling_price"].mean().round(2)
+print(f"\nThe average price of the propert with Fireplace and withour Fireplace \n{avg_fireplace}")
+
+fig18=go.Figure()
+fig18.add_trace(go.Bar(
+    x=avg_fireplace.index,y=avg_fireplace.values,marker_color=["#2cd4c6", "#0e37ed"],
+    marker_line_color="black",marker_line_width=1.5,
+    text=avg_fireplace.index,textposition="outside"
+))
+fig18.update_layout(
+    title="Average Selling Price:  By fireplace",
+    xaxis_title="fireplace Category",
+    yaxis_title="Average Selling Price",template="plotly_white"
+)
+st.plotly_chart(fig18,use_container_width=True)
+
+
 
 # plt.bar(avg_fireplace.index,avg_fireplace.values,color=['skyblue',"blue"],edgecolor="black")
 # for i,val in enumerate(avg_fireplace):
@@ -522,10 +571,24 @@ plt.show()
 # plt.ylabel("Average Selling Price")
 # # plt.show()
 
-# # view
-# df["view_category"]=df["view"].apply(lambda x:"Ocean" if x=="ocean" else "City" if x=="city" else "Mountain" if x== "mountain" else "other")
-# avg_view=df.groupby("view_category")["selling_price"].mean().round(2)
-# print(f"\nThe average price of the propert with VIEW \n{avg_view}")
+# view
+df["view_category"]=df["view"].apply(lambda x:"Ocean" if x=="ocean" else "City" if x=="city" else "Mountain" if x== "mountain" else "other")
+avg_view=df.groupby("view_category")["selling_price"].mean().round(2)
+print(f"\nThe average price of the propert with VIEW \n{avg_view}")
+
+fig19=go.Figure()
+fig19.add_trace(go.Bar(
+    x=avg_view.index,y=avg_view.values,marker_color=["#2cd4c6", "#0e37ed","#10ebd8"],
+    marker_line_color="black",marker_line_width=1.5,
+    text=avg_view.index,textposition="outside"
+))
+fig19.update_layout(
+    title="Average Selling Price:  By VIEW",xaxis_title="VIEW Category",
+    yaxis_title="Average Selling Price",template="plotly_white"
+)
+st.plotly_chart(fig19,use_container_width=True)
+
+
 # plt.bar(avg_view.index,avg_view.values,color=["blue","skyblue"],edgecolor="black")
 # for i,val in enumerate(avg_view):
 #     plt.text(i,val,f"{val:.0f}",ha="center",va="bottom",fontsize=10)
@@ -534,13 +597,25 @@ plt.show()
 # plt.ylabel("Average Selling Price")
 # # plt.show()
 
-# # distance_to_hospital
+# distance_to_hospital
 
-# df["distance_to_hospital_category"]=df["distance_to_hospital"].apply(lambda x: "Near" if x<=6 else "Far")
-# print(df[["distance_to_hospital","distance_to_hospital_category"]])
+df["distance_to_hospital_category"]=df["distance_to_hospital"].apply(lambda x: "Near" if x<=6 else "Far")
+print(df[["distance_to_hospital","distance_to_hospital_category"]])
+avg_distance_to_hospital=df.groupby("distance_to_hospital_category")["selling_price"].mean().round(2)
+print(f"\nThe average price of the propert with Hospital near or far \n{avg_distance_to_hospital}")
 
-# avg_distance_to_hospital=df.groupby("distance_to_hospital_category")["selling_price"].mean().round(2)
-# print(f"\nThe average price of the propert with Hospital near or far \n{avg_distance_to_hospital}")
+fig20=go.Figure()
+fig20.add_trace(go.Bar(
+    x=avg_distance_to_hospital.index,y=avg_distance_to_hospital.values,
+    marker_color=["#2cd4c6", "#0e37ed"],marker_line_color="black",
+    marker_line_width=1.5,text=avg_distance_to_hospital.index,textposition="outside"
+))
+fig20.update_layout(
+    title="Average Selling Price:  By Hospital distance Near or Far",
+    xaxis_title="Hospital Category",yaxis_title="Average Selling Price"
+)
+st.plotly_chart(fig20,use_container_width=True)
+
 
 # plt.bar(avg_distance_to_hospital.index,avg_distance_to_hospital.values,color=["blue","skyblue"],edgecolor="black")
 # for i,val in enumerate(avg_distance_to_hospital):
@@ -550,13 +625,26 @@ plt.show()
 # plt.ylabel("Average Selling Price")
 # # plt.show()
 
-# # distance_to_grocery_store
+# distance_to_grocery_store
+df["distance_to_grocery_store_category"]=df["distance_to_grocery_store"].apply(lambda x: "Near" if x<=3.5 else "Far")
+print(df[["distance_to_grocery_store","distance_to_grocery_store_category"]])
+avg_distance_to_grocery_store=df.groupby("distance_to_grocery_store_category")["selling_price"].mean().round(2)
+print(f"\nThe average price of the propert with Grocery store near or far \n{avg_distance_to_grocery_store}")
 
-# df["distance_to_grocery_store_category"]=df["distance_to_grocery_store"].apply(lambda x: "Near" if x<=3.5 else "Far")
-# print(df[["distance_to_grocery_store","distance_to_grocery_store_category"]])
+fig21=go.Figure()
+fig21.add_trace(go.Bar(
+    x=avg_distance_to_grocery_store.index,y=avg_distance_to_grocery_store.values,
+    marker_color=["#2cd4c6", "#0e37ed"],marker_line_color="black",marker_line_width=1.5
+    ,text=avg_distance_to_grocery_store.index,textposition="outside"
+))
+fig21.update_layout(
+    title="Average Selling Price:  By Grocery Store Near or Far",xaxis_title="Grocery Store Category"
+    ,yaxis_title="Average Selling Price",
+    template="plotly_white"
+)
+st.plotly_chart(fig21,use_container_width=True)
 
-# avg_distance_to_grocery_store=df.groupby("distance_to_grocery_store_category")["selling_price"].mean().round(2)
-# print(f"\nThe average price of the propert with Grocery store near or far \n{avg_distance_to_grocery_store}")
+
 # plt.bar(avg_distance_to_grocery_store.index,avg_distance_to_grocery_store.values,color=["blue","skyblue"],edgecolor="black")
 # for i,val in enumerate(avg_distance_to_grocery_store):
 #     plt.text(i,val,f"{val:.0f}",ha="center",va="bottom",fontsize=10)
@@ -565,13 +653,23 @@ plt.show()
 # plt.ylabel("Average Selling Price")
 # # plt.show()
 
-# # crime_rate
-# df["crime_rate_category"]=df["crime_rate"].apply(lambda x: "good" if x <= 1.5 else "fair" if x<=5 else "very poor" if x>10 else "poor")
-# print(df[["crime_rate","crime_rate_category"]])
+# crime_rate
+df["crime_rate_category"]=df["crime_rate"].apply(lambda x: "good" if x <= 1.5 else "fair" if x<=5 else "very poor" if x>10 else "poor")
+print(df[["crime_rate","crime_rate_category"]])
+avg_crime_rate=df.groupby("crime_rate_category")["selling_price"].mean().round(2)
+print(f"\nThe average price of the propert with Crime Rate Category  \n{avg_crime_rate}")
 
-# avg_crime_rate=df.groupby("crime_rate_category")["selling_price"].mean().round(2)
-# print(f"\nThe average price of the propert with Crime Rate Category  \n{avg_crime_rate}")
+fig22=go.Figure()
+fig22.add_trace(go.Bar(
+    x=avg_crime_rate.index,y=avg_crime_rate.values,marker_color=["#2cd4c6", "#0e37ed","#10ebd8"],
+    marker_line_color="black",marker_line_width=1.5,text=avg_crime_rate.index,
+    textposition="outside"
+))
+fig22.update_layout(title="Average Selling Price:  By CRIME RATE",
+                    xaxis_title="CRIME RATE Category",yaxis_title="Average Selling Price"
+                    )
 
+st.plotly_chart(fig22,use_container_width=True)
 # plt.bar(avg_crime_rate.index,avg_crime_rate.values,color=["skyblue","blue"],edgecolor="black")
 # for i,val in enumerate(avg_crime_rate):
 #     plt.text(i,val ,f"{val:.0f}",ha="center",va="bottom",fontsize=10)
@@ -580,11 +678,23 @@ plt.show()
 # plt.ylabel("Average Selling Price")
 # # plt.show()
 
-# # heating_type
-# df["heating_type_category"]=df["heating_type"].apply(lambda x: "Gas" if x== "gas" else "Oil" if x== "oil" else "Electric" if x=="electric" else "other")
-# avg_heating_type=df.groupby("heating_type_category")["selling_price"].mean().round(2)
-# print(f"\nThe average price of the propert with Heating type  \n{avg_heating_type}")
+# heating_type
+df["heating_type_category"]=df["heating_type"].apply(lambda x: "Gas" if x== "gas" else "Oil" if x== "oil" else "Electric" if x=="electric" else "other")
+avg_heating_type=df.groupby("heating_type_category")["selling_price"].mean().round(2)
+print(f"\nThe average price of the propert with Heating type  \n{avg_heating_type}")
 
+fig23=go.Figure()
+fig23.add_trace(go.Bar(
+    x=avg_heating_type.index,y=avg_heating_type.values,marker_color=["#2cd4c6", "#0e37ed"],
+    marker_line_color="black",
+    marker_line_width=1.5,text=avg_heating_type.index,textposition="outside"
+))
+fig23.update_layout(
+    title="Average Selling Price:  By Heating Type",
+    yaxis_title="Average Selling Price",
+    xaxis_title="Heating Type Categor",template="plotly_white"
+)
+st.plotly_chart(fig23,use_container_width=True)
 # plt.bar(avg_heating_type.index,avg_heating_type.values,color=["skyblue","blue"],edgecolor="black")
 # for i,val in enumerate(avg_heating_type):
 #     plt.text(i,val,f"{val:.0f}",ha="center",va="bottom",fontsize=10)
@@ -593,12 +703,26 @@ plt.show()
 # plt.ylabel("Average Selling Price")
 # # plt.show()
 
-# # cooling_type
+# cooling_type
+df["cooling_type_category"]=df["cooling_type"].apply(lambda x: "None" if x=="none" else "Central" if x=="central" else "Window" if x=="window" else "other")
+avg_cooling_type=df.groupby("cooling_type_category")["selling_price"].mean().round(2)
+print(f"\nThe average price of the propert with cooling type  \n{avg_cooling_type}")
+fig24=go.Figure()
+fig24.add_trace(go.Bar(
+    x=avg_cooling_type.index,y=avg_cooling_type.values,marker_color=["#2cd4c6", "#0e37ed","#10ebd8"],
+    marker_line_color="black",
+    marker_line_width=1.5,text=avg_cooling_type.index,textposition="outside"
+))
+fig24.update_layout(
+    title="Average Selling Price:  By Cooling Type",
+    xaxis_title="Cooling Type Category",
+    yaxis_title="Average Selling Price",
+    template="plotly_white"
+)
+st.plotly_chart(fig24,use_container_width=True)
 
-# df["cooling_type_category"]=df["cooling_type"].apply(lambda x: "None" if x=="none" else "Central" if x=="central" else "Window" if x=="window" else "other")
- 
-# avg_cooling_type=df.groupby("cooling_type_category")["selling_price"].mean().round(2)
-# print(f"\nThe average price of the propert with cooling type  \n{avg_cooling_type}")
+
+
 # plt.bar(avg_cooling_type.index,avg_cooling_type.values,color=["skyblue","blue"],edgecolor="black")
 # for i,val in enumerate(avg_cooling_type):
 #     plt.text(i,val,f"{val:.0f}",ha="center",va="bottom",fontsize=10)
@@ -607,11 +731,23 @@ plt.show()
 # plt.ylabel("Average Selling Price")
 # # plt.show()
 
-# # foundation_type
-# df["foundation_type_category"]=df["foundation_type"].apply(lambda x: "Slab" if x=="slab" else "Basement" if x=="basement" else "Crawl space" if x=="crawl space" else "other")
+# foundation_type
+df["foundation_type_category"]=df["foundation_type"].apply(lambda x: "Slab" if x=="slab" else "Basement" if x=="basement" else "Crawl space" if x=="crawl space" else "other")
+avg_foundation_type=df.groupby("foundation_type_category")["selling_price"].mean().round(2)
+print(f"\nThe average price of the propert with Foundation type  \n{avg_foundation_type}")
 
-# avg_foundation_type=df.groupby("foundation_type_category")["selling_price"].mean().round(2)
-# print(f"\nThe average price of the propert with Foundation type  \n{avg_foundation_type}")
+fig25=go.Figure()
+fig25.add_trace(go.Bar(
+    x=avg_foundation_type.index,y=avg_foundation_type.values,marker_color=["#2cd4c6", "#0e37ed","#10ebd8"],
+    marker_line_color="black",marker_line_width=1.5,text=avg_foundation_type.index,textposition="outside"
+))
+fig25.update_layout(
+    title="Average Selling Price:  By Foundation Type",xaxis_title="Foundation Type Categor",
+    yaxis_title="Average Selling Price",template="plotly_white"
+)
+
+st.plotly_chart(fig25,use_container_width=True)
+
 
 # plt.bar(avg_foundation_type.index,avg_foundation_type.values,color=["skyblue","blue"],edgecolor="black")
 # for i,val in enumerate(avg_foundation_type):
@@ -622,11 +758,11 @@ plt.show()
 # # plt.show()
 
 
-# # roof_material
-# df["roof_material_category"]=df["roof_material"].apply(lambda x: "Metal" if x=="metal" else "Tile" if x=="tile" else "Asphalt" if x=="asphalt" else "other")
+# roof_material
+df["roof_material_category"]=df["roof_material"].apply(lambda x: "Metal" if x=="metal" else "Tile" if x=="tile" else "Asphalt" if x=="asphalt" else "other")
+avg_roof_material=df.groupby("roof_material")["selling_price"].mean().round(2)
+print(avg_roof_material)
 
-# avg_roof_material=df.groupby("roof_material")["selling_price"].mean().round(2)
-# print(avg_roof_material)
 
 # plt.bar(avg_roof_material.index,avg_roof_material.values,color=["skyblue","blue"],edgecolor="black")
 # for i,val in enumerate(avg_roof_material):
@@ -682,12 +818,22 @@ plt.show()
 # # plt.show()
 
 
-# # median_income
-# df["median_income_category"]=df["median_income"].apply(lambda x: "Low" if x<=50000 else "Medium" if x<=95000 else "High" if x<=120000 else "Very High")
-# print(df[["median_income","median_income_category"]])
+# median_income
+df["median_income_category"]=df["median_income"].apply(lambda x: "Low" if x<=50000 else "Medium" if x<=95000 else "High" if x<=120000 else "Very High")
+print(df[["median_income","median_income_category"]])
 
-# avg_median_income=df.groupby("median_income_category")["selling_price"].mean().round(2)
-# print(avg_median_income)
+avg_median_income=df.groupby("median_income_category")["selling_price"].mean().round(2)
+print(avg_median_income)
+
+fig16=go.Figure()
+fig16.add_trace(go.Bar(
+    x=avg_median_income.index,y=avg_median_income.values,marker_color=["#00ffea", "#002fff","#3eff18", "#b9c420"],
+    marker_line_color="black",marker_line_width=1.5,text=avg_median_income.values,textposition="outside"
+))
+fig16.update_layout(
+    title="Average Selling Price:  By Median Income",xaxis_title="Median Income Category",yaxis_title="Average Selling Price",template="plotly_white"
+)
+st.plotly_chart(fig16,use_container_width=True)
 
 # plt.bar(avg_median_income.index,avg_median_income.values,color=["skyblue","blue"],edgecolor="black")
 # for i,val in enumerate(avg_hoa_fee):
